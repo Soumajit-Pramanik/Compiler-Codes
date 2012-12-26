@@ -60,13 +60,19 @@ IS			(u|U|l|L)*
                            if(DEBUG)printf("\nLex yylval is %g\n", (yylval.ex).exp.val);
                            return(CONSTANT); 
                         }
-L?'(\\.|[^\\'])+'	{  return(CONSTANT); }
+L?'(\\.|[^\\'])+'	{  (yylval.ex).exp.val=atof(yytext); 
+                           (yylval.ex).exp.etype=11;  
+                           if(DEBUG)printf("\nLex yylval is %g\n", (yylval.ex).exp.val);return(CONSTANT); }
 
-{D}+{E}{FS}?		{  return(CONSTANT); }
+{D}+{E}{FS}?		{  (yylval.ex).exp.val=atof(yytext); 
+                           (yylval.ex).exp.etype=15;  
+                           if(DEBUG)printf("\nLex yylval is %g\n", (yylval.ex).exp.val);return(CONSTANT); }
 {D}*"."{D}+({E})?{FS}?	{  (yylval.ex).exp.val=atof(yytext); 
                            (yylval.ex).exp.etype=15;  
                            if(DEBUG)printf("\nLex yylval is %g\n", (yylval.ex).exp.val);return(CONSTANT); }
-{D}+"."{D}*({E})?{FS}?	{  return(CONSTANT); }
+{D}+"."{D}*({E})?{FS}?	{  (yylval.ex).exp.val=atof(yytext); 
+                           (yylval.ex).exp.etype=15;  
+                           if(DEBUG)printf("\nLex yylval is %g\n", (yylval.ex).exp.val);return(CONSTANT); }
 
 L?\"(\\.|[^\\"])*\"	{  return(STRING_LITERAL); }
 
@@ -96,7 +102,7 @@ L?\"(\\.|[^\\"])*\"	{  return(STRING_LITERAL); }
 ("{"|"<%")		{  if(_left_paren_func==0)
                                      yylval.blockno = pushSymbolTable(); 
 			   else
-                                     _right_paren_func=0;
+                                    { _left_paren_func=0;_right_paren_func=0;}
                            return('{'); }
 ("}"|"%>")		{  popSymbolTable(); return('}'); }
 ","			{  return(','); }
